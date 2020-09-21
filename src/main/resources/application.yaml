@@ -1,0 +1,8 @@
+server:
+  port: 8189
+  servlet:
+    context-path: /kontur_focus_service
+
+  jackson:
+    serialization:
+      indent_output: true
