@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
 import ru.ysolutions.service.kontur_focus_integration.services.FocusClientServiceImpl;
 
-import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequestMapping(path = "/api/v1")
@@ -22,8 +22,8 @@ public class ULFocusController {
     }
 
     @GetMapping(path = "/{url_part}")
-    @ApiOperation("Services")
-    public ResponseEntity<?> get(@PathVariable String url_part
+    @ApiOperation(value = "Services",httpMethod = "GET")
+    public ResponseEntity<?> getInfo(@PathVariable @ApiParam("Part URL for url request to Kontur Focus") String url_part
             , @RequestParam(required = false) @ApiParam("Param_name KEY") String key
             , @RequestParam(required = false) @ApiParam("Param_name OGRN") String ogrn
             , @RequestParam(required = false) @ApiParam("Param_name INN") String inn
@@ -36,22 +36,15 @@ public class ULFocusController {
             case ANALYTICS:
             case EGR_DETAILS:
             case BRIEF_REPORT: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.get(enumFocusController, key, ogrn, inn));
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, key, ogrn, inn));
             }
             case FINAN:
             case EXCERPT:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.get(enumFocusController, key, ogrn, inn));
+                return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDF(enumFocusController, key, ogrn, inn));
             }
             default:
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request url not found: " + url_part);
         }
-        /*try {
-
-            EnumFocusController e = EnumFocusController.valueOf(url_part.toUpperCase());
-            return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.get(e, key, ogrn, inn));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request url not found: " + url_part);
-        }*/
     }
 /*
     @GetMapping(path = "/excerpt")

@@ -12,5 +12,7 @@ public interface FocusClientServiceImpl {
     String getAnalytics(String key, String ogrn, String inn);
     */
 
-    String get(EnumFocusController url_part, String key, String ogrn, String inn);
+    String getInfoUL(EnumFocusController url_part, String key, String ogrn, String inn);
+
+    byte[] getFilePDF(EnumFocusController url_part, String key, String ogrn, String inn);
 }

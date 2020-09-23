@@ -5,7 +5,6 @@ import org.springframework.web.client.RestTemplate;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
 
 @Service
 public class FocusClientServiceService implements FocusClientServiceImpl {
@@ -17,8 +16,13 @@ public class FocusClientServiceService implements FocusClientServiceImpl {
     }
 
     @Override
-    public String get(EnumFocusController url_part, String key, String ogrn, String inn) {
-        return restTemplate.getForEntity(String.format("https://focus-api.kontur.ru/api3/%s?key=%s&inn=%s&ogrn=%s&xml", url_part.getValue(), key,  inn,ogrn), String.class).getBody();
+    public byte[] getFilePDF(EnumFocusController url_part, String key, String ogrn, String inn) {
+        return restTemplate.getForEntity(String.format("https://focus-api.kontur.ru/api3/%s?key=%s&inn=%s&ogrn=%s&xml", url_part.getValue(), key, inn, ogrn), byte[].class).getBody();
+    }
+
+    @Override
+    public String getInfoUL(EnumFocusController url_part, String key, String ogrn, String inn) {
+        return restTemplate.getForEntity(String.format("https://focus-api.kontur.ru/api3/%s?key=%s&inn=%s&ogrn=%s&xml", url_part.getValue(), key, inn, ogrn), String.class).getBody();
     }
     /*
     @Override
