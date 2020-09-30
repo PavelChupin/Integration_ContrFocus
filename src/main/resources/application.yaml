@@ -6,3 +6,8 @@ server:
   jackson:
     serialization:
       indent_output: true
+
+
+konturfocus:
+  url: https://focus-api.kontur.ru/api3
+  key: 7ffdb007c91831b43932c4bc19e290b4fc6d546a
