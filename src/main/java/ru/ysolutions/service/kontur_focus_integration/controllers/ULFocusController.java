@@ -1,5 +1,6 @@
 package ru.ysolutions.service.kontur_focus_integration.controllers;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequestMapping(path = "/api/v1")
+@Api("KonturFocusIntegrationApplication")
 public class ULFocusController {
     private FocusClientServiceImpl focusClientService;
     private ConfigProperties configProperties;
