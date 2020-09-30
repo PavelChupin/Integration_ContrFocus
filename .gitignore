@@ -21,7 +21,8 @@ target/
 target/
 out/
 *.log
-*.xml
+
+application.yaml
 
 ### NetBeans ###
 /nbproject/private/
