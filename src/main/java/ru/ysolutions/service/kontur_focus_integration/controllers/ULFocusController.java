@@ -13,7 +13,8 @@ import ru.ysolutions.service.kontur_focus_integration.services.FocusClientServic
 
 import java.util.Date;
 
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
+import static org.springframework.http.MediaType.APPLICATION_XML;
 
 @RestController
 @RequestMapping(path = "/api/v1")
@@ -29,21 +30,22 @@ public class ULFocusController {
     }
 
     @GetMapping(path = "/{url_part}")
-    @ApiOperation(value = "Services",httpMethod = "GET")
+    @ApiOperation(value = "Services", httpMethod = "GET")
     public ResponseEntity<?> getInfo(@PathVariable @ApiParam("Part URL for url request to Kontur Focus") String url_part
             , @RequestParam(required = false) @ApiParam("Param_name: key - key for connection to Kontur Focus") String key
             , @RequestParam(required = false) @ApiParam("Param_name: ogrn - OGRN of client UL") String ogrn
             , @RequestParam(required = false) @ApiParam("Param_name: inn - INN of client UL") String inn
             , @RequestParam(required = false) @ApiParam("Param_name: q - string of search") String q
-            , @RequestParam(required = false) @ApiParam("Param_name: date - date of publication") Date date
-            , @RequestParam(required = false) @ApiParam("Param_name: dateBirth - BirthDate of person") Date birthDate
+            , @RequestParam(required = false) @ApiParam("Param_name: date - date of publication") String date
+            , @RequestParam(required = false) @ApiParam("Param_name: dateBirth - BirthDate of person") String birthDate
             , @RequestParam(required = false) @ApiParam("Param_name: fio - FIO of person or public Dolzontnih Lic") String fio
             , @RequestParam(required = false) @ApiParam("Param_name: innfl - INN of person") String innfl
             , @RequestParam(required = false) @ApiParam("Param_name: passportNumber - List of numbers passports for chek on valid") String passportNumber
             , @RequestParam(required = false) @ApiParam("Param_name: nza - NZA of foreign representatives") String nza
+            , @RequestParam(required = false) @ApiParam("Param_name: PDF - flag get PDF") boolean pdf
     ) {
         //Проверяем что к нам стучатся по нашему ключу
-        if (!key.equals(configProperties.getKey())){
+        if (!key.equals(configProperties.getKey())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Param of key is not valid");
         }
 
@@ -53,28 +55,34 @@ public class ULFocusController {
             case CONTACTS:
             case LICENCES:
             case ANALYTICS:
-            case EGR_DETAILS:
+            case EGR_DETAILS: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, ogrn, inn));
+            }
             case BRIEF_REPORT: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController,  ogrn, inn));
+                if (pdf) {
+                    return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDFBriefReport(enumFocusController, ogrn, inn, pdf));
+                } else {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, ogrn, inn));
+                }
             }
             case FINAN:
-            case EXCERPT:{
-                return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDF(enumFocusController,  ogrn, inn));
+            case EXCERPT: {
+                return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDF(enumFocusController, ogrn, inn));
             }
-            case FIZ_BANCKR:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findMessBankrFiz(enumFocusController,  q, date));
+            case FIZ_BANCKR: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findMessBankrFiz(enumFocusController, q, date));
             }
-            case PERSON_BANKRUPTCY:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoMessBankrFiz(enumFocusController,  innfl, fio, birthDate));
+            case PERSON_BANKRUPTCY: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoMessBankrFiz(enumFocusController, innfl, fio, birthDate));
             }
-            case CHECK_PASSPORT:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.isInvalidPassports(enumFocusController,  passportNumber));
+            case CHECK_PASSPORT: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.isInvalidPassports(enumFocusController, passportNumber));
             }
-            case PEP_SEARCH:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findPublicDolLic(enumFocusController,  fio));
+            case PEP_SEARCH: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findPublicDolLic(enumFocusController, fio));
             }
-            case FOREIGN_REPRESENTATIVES:{
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getForeignRepresen(enumFocusController,  inn, nza));
+            case FOREIGN_REPRESENTATIVES: {
+                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getForeignRepresen(enumFocusController, inn, nza));
             }
             default:
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request url not found: " + url_part);
