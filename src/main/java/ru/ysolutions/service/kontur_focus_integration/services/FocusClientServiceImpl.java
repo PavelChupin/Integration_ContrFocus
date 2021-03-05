@@ -32,81 +32,46 @@ public class FocusClientServiceImpl implements FocusClientService {
     }
 
     @Override
-    public byte[] getFilePDF(EnumFocusController url_part, String ogrn, String inn) throws RestClientException{
+    public byte[] getFilePDF(EnumFocusController url_part, String ogrn, String inn) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
         return getResponceByteArr(getUrl(getUrlParams(urlParams), url_part));
-        //return restTemplate.getForEntity(String.format("%s/%s?key=%s&inn=%s&ogrn=%s&xml", configProperties.getUrl(), url_part.getValue(), configProperties.getKey(), inn, ogrn), byte[].class).getBody();
     }
 
     @Override
-    public String findMessBankrFiz(EnumFocusController url_part, String q, String date) throws RestClientException{
+    public String findMessBankrFiz(EnumFocusController url_part, String q, String date) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("q", q);
         urlParams.put("date", date);
         return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
-        /*
-        String params = String.format("key=%s", configProperties.getKey());
-
-        if (q != null) {
-            params += String.format("&q=%s", q);
-        }
-
-        if (date != null) {
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy'%2F'MM'%2F'dd", Locale.ENGLISH);
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            //params += String.format("&date=%s", dateFormat.format(date));
-            params += String.format("&date=%s", date);
-        }
-
-        return restTemplate.getForEntity(String.format("%s/%s?%s&xml", configProperties.getUrl(), url_part.getValue(), params), String.class).getBody();
-
-         */
     }
 
     @Override
-    public String getInfoMessBankrFiz(EnumFocusController url_part, String innfl, String fio, String birthDate) throws RestClientException{
+    public String getInfoMessBankrFiz(EnumFocusController url_part, String innfl, String fio, String birthDate) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("innfl", innfl);
         urlParams.put("fio", fio);
         urlParams.put("birthDate", birthDate);
         return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
-        /*String params = String.format("key=%s", configProperties.getKey());
-
-        if (innfl != null) {
-            params += String.format("&innfl=%s", innfl);
-        }
-        if (fio != null) {
-            params += String.format("&fio=%s", fio);
-        }
-        if (birthDate != null) {
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            //params += String.format("&birthDate=%s", dateFormat.format(birthDate));
-            params += String.format("&date=%s", birthDate);
-        }
-
-        return restTemplate.getForEntity(String.format("%s/%s?%s&xml", configProperties.getUrl(), url_part.getValue(), params), String.class).getBody();*/
     }
 
     @Override
-    public String isInvalidPassports(EnumFocusController url_part, String passportNumber) throws RestClientException{
+    public String isInvalidPassports(EnumFocusController url_part, String passportNumber) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("passportNumber", passportNumber);
         return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
-        //return restTemplate.getForEntity(String.format("%s/%s?key=%s&passportNumber=%s&xml", configProperties.getUrl(), url_part.getValue(), configProperties.getKey(), passportNumber), String.class).getBody();
     }
 
     @Override
-    public String findPublicDolLic(EnumFocusController url_part, String fio) throws RestClientException{
+    public String findPublicDolLic(EnumFocusController url_part, String fio) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("fio", fio);
         return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
-        //return restTemplate.getForEntity(String.format("%s/%s?key=%s&fio=%s&xml", configProperties.getUrl(), url_part.getValue(), configProperties.getKey(), fio), String.class).getBody();
     }
 
     @Override
-    public String getForeignRepresen(EnumFocusController url_part, String inn, String nza) throws RestClientException{
+    public String getForeignRepresen(EnumFocusController url_part, String inn, String nza) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("nza", nza);
@@ -114,35 +79,20 @@ public class FocusClientServiceImpl implements FocusClientService {
     }
 
     @Override
-    public String getInfoUL(EnumFocusController url_part, String ogrn, String inn) throws RestClientException{
+    public String getInfoUL(EnumFocusController url_part, String ogrn, String inn) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
         return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
-
-        //return restTemplate.getForEntity(String.format("%s/%s?key=%s&inn=%s&ogrn=%s&xml", configProperties.getUrl(), url_part.getValue(), configProperties.getKey(), inn, ogrn), String.class).getBody();
     }
 
     @Override
-    public byte[] getFilePDFBriefReport(EnumFocusController url_part, String ogrn, String inn, boolean pdf) throws RestClientException{
+    public byte[] getFilePDFBriefReport(EnumFocusController url_part, String ogrn, String inn, boolean pdf) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
         urlParams.put("pdf", Boolean.valueOf(pdf).toString());
         return getResponceByteArr(getUrl(getUrlParams(urlParams), url_part));
-
-        /*String params = String.format("key=%s", configProperties.getKey());
-
-        if (inn != null) {
-            params += String.format("&inn=%s", inn);
-        }
-
-        if (ogrn != null) {
-            params += String.format("&ogrn=%s", ogrn);
-        }
-        System.out.println(String.format("%s/%s?%s&pdf=%s", configProperties.getUrl(), url_part.getValue(), params, pdf));
-        return restTemplate.getForEntity(String.format("%s/%s?%s&pdf=%s", configProperties.getUrl(), url_part.getValue(), params, pdf), byte[].class).getBody();
-        */
     }
 
     private byte[] getResponceByteArr(String url) {
@@ -157,7 +107,7 @@ public class FocusClientServiceImpl implements FocusClientService {
         return responce;
     }
 
-    private String getResponceBody(String url) throws RestClientException{
+    private String getResponceBody(String url) throws RestClientException {
         log.info("url request to kontr focus: " + url);
 
         String responce = "";
