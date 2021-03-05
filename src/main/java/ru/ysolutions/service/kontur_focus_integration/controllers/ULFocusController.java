@@ -3,15 +3,19 @@ package ru.ysolutions.service.kontur_focus_integration.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import ru.ysolutions.service.kontur_focus_integration.configs.ConfigProperties;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
-import ru.ysolutions.service.kontur_focus_integration.services.FocusClientServiceImpl;
+import ru.ysolutions.service.kontur_focus_integration.services.FocusClientService;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
@@ -20,11 +24,12 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 @RequestMapping(path = "/api/v1")
 @Api("KonturFocusIntegrationApplication")
 public class ULFocusController {
-    private FocusClientServiceImpl focusClientService;
+    private static final Logger log = LoggerFactory.getLogger(ULFocusController.class);
+    private FocusClientService focusClientService;
     private ConfigProperties configProperties;
 
     @Autowired
-    public ULFocusController(FocusClientServiceImpl focusClientService, ConfigProperties configProperties) {
+    public ULFocusController(FocusClientService focusClientService, ConfigProperties configProperties) {
         this.focusClientService = focusClientService;
         this.configProperties = configProperties;
     }
@@ -44,48 +49,67 @@ public class ULFocusController {
             , @RequestParam(required = false) @ApiParam("Param_name: nza - NZA of foreign representatives") String nza
             , @RequestParam(required = false) @ApiParam("Param_name: PDF - flag get PDF") boolean pdf
     ) {
+        Map<String, String> paramsLog = new HashMap<>();
+        paramsLog.put("url_part", url_part);
+        paramsLog.put("key", key);
+        paramsLog.put("ogrn", ogrn);
+        paramsLog.put("inn", inn);
+        paramsLog.put("q", q);
+        paramsLog.put("date", date);
+        paramsLog.put("birthDate", birthDate);
+        paramsLog.put("fio", fio);
+        paramsLog.put("innfl", innfl);
+        paramsLog.put("passportNumber", passportNumber);
+        paramsLog.put("nza", nza);
+        paramsLog.put("pdf flag", Boolean.valueOf(pdf).toString());
+        log.info("Input params request for gate: " + paramsLog);
+
         //Проверяем что к нам стучатся по нашему ключу
         if (!key.equals(configProperties.getKey())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Param of key is not valid");
         }
 
-        EnumFocusController enumFocusController = EnumFocusController.getByValue(url_part);
-        switch (enumFocusController) {
-            case REQ:
-            case CONTACTS:
-            case LICENCES:
-            case ANALYTICS:
-            case EGR_DETAILS: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, ogrn, inn));
-            }
-            case BRIEF_REPORT: {
-                if (pdf) {
-                    return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDFBriefReport(enumFocusController, ogrn, inn, pdf));
-                } else {
+        try {
+            EnumFocusController enumFocusController = EnumFocusController.getByValue(url_part);
+            switch (enumFocusController) {
+                case REQ:
+                case CONTACTS:
+                case LICENCES:
+                case ANALYTICS:
+                case EGR_DETAILS: {
                     return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, ogrn, inn));
                 }
+                case BRIEF_REPORT: {
+                    if (pdf) {
+                        return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDFBriefReport(enumFocusController, ogrn, inn, pdf));
+                    } else {
+                        return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoUL(enumFocusController, ogrn, inn));
+                    }
+                }
+                case FINAN:
+                case EXCERPT: {
+                    return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDF(enumFocusController, ogrn, inn));
+                }
+                case FIZ_BANCKR: {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findMessBankrFiz(enumFocusController, q, date));
+                }
+                case PERSON_BANKRUPTCY: {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoMessBankrFiz(enumFocusController, innfl, fio, birthDate));
+                }
+                case CHECK_PASSPORT: {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.isInvalidPassports(enumFocusController, passportNumber));
+                }
+                case PEP_SEARCH: {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findPublicDolLic(enumFocusController, fio));
+                }
+                case FOREIGN_REPRESENTATIVES: {
+                    return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getForeignRepresen(enumFocusController, inn, nza));
+                }
+                default:
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request url not found: " + url_part);
             }
-            case FINAN:
-            case EXCERPT: {
-                return ResponseEntity.ok().contentType(APPLICATION_PDF).body(focusClientService.getFilePDF(enumFocusController, ogrn, inn));
-            }
-            case FIZ_BANCKR: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findMessBankrFiz(enumFocusController, q, date));
-            }
-            case PERSON_BANKRUPTCY: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getInfoMessBankrFiz(enumFocusController, innfl, fio, birthDate));
-            }
-            case CHECK_PASSPORT: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.isInvalidPassports(enumFocusController, passportNumber));
-            }
-            case PEP_SEARCH: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.findPublicDolLic(enumFocusController, fio));
-            }
-            case FOREIGN_REPRESENTATIVES: {
-                return ResponseEntity.ok().contentType(APPLICATION_XML).body(focusClientService.getForeignRepresen(enumFocusController, inn, nza));
-            }
-            default:
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Request url not found: " + url_part);
+        } catch (RestClientException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 /*

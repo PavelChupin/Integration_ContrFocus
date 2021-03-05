@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.ysolutions.service.kontur_focus_integration</groupId>
     <artifactId>kontur_focus_integration</artifactId>
-    <version>1.1.005</version>
+    <version>1.1.006</version>
     <packaging>jar</packaging>
     <name>kontur_focus_integration</name>
     <description>Service for integration with kontur focus</description>
@@ -21,19 +21,30 @@
         <maven.compiler.source>1.8</maven.compiler.source><!-- версия исходников-->
         <maven.compiler.target>1.8</maven.compiler.target><!-- версия с которой можно запустить приложение-->
         <start-class>ru.ysolutions.service.kontur_focus_integration.KonturFocusIntegrationApplication</start-class>
-
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <!-- Swich off this standart logger spring. Отключаем стандартый логгер спринга -->
+                <!--<exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>-->
+            </exclusions>
         </dependency>
+
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
