@@ -25,8 +25,8 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 @Api("KonturFocusIntegrationApplication")
 public class ULFocusController {
     private static final Logger log = LoggerFactory.getLogger(ULFocusController.class);
-    private FocusClientService focusClientService;
-    private ConfigProperties configProperties;
+    private final FocusClientService focusClientService;
+    private final ConfigProperties configProperties;
 
     @Autowired
     public ULFocusController(FocusClientService focusClientService, ConfigProperties configProperties) {
