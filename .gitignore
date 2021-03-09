@@ -21,6 +21,7 @@ target/
 target/
 out/
 *.log
+*.gz
 
 application.yaml
 
