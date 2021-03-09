@@ -19,7 +19,7 @@ public class FocusClientServiceImpl implements FocusClientService {
 
     private RestTemplate restTemplate;
 
-    private ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
 
     @Autowired
     public FocusClientServiceImpl(ConfigProperties configProperties) {
@@ -125,14 +125,14 @@ public class FocusClientServiceImpl implements FocusClientService {
             log.debug("input params to method getUrlParams: " + params);
         }
 
-        String urlParams = String.format("key=%s", configProperties.getKey());
+        StringBuilder urlParams = new StringBuilder(String.format("key=%s", configProperties.getKey()));
 
-        for (Map.Entry e : params.entrySet()) {
-            if (e.getValue() != null) {
-                urlParams += String.format("&%s=%s", e.getKey(), e.getValue());
+        params.forEach((key, value) -> {
+            if (value != null) {
+                urlParams.append(String.format("&%s=%s", key, value));
             }
-        }
-        return urlParams;
+        });
+        return urlParams.toString();
     }
 
     private String getUrl(String urlParams, EnumFocusController url_part) {
