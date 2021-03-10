@@ -1,13 +1,11 @@
-package ru.ysolutions.service.kontur_focus_integration.services;
+package ru.ysolutions.service.kontur_focus_integration.services.v1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.ysolutions.service.kontur_focus_integration.dao.entities.PersonBankruptcy;
 import ru.ysolutions.service.kontur_focus_integration.dao.repositories.PersonBankruptcyRepository;
 import ru.ysolutions.service.kontur_focus_integration.configs.ConfigProperties;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;

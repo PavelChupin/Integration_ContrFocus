@@ -1,9 +1,10 @@
-package ru.ysolutions.service.kontur_focus_integration.services;
+package ru.ysolutions.service.kontur_focus_integration.services.v2;
 
 import org.springframework.web.client.RestClientException;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
+import ru.ysolutions.service.kontur_focus_integration.services.Service;
 
-public interface FocusClientServiceNew extends Service{
+public interface FocusClientServiceNew extends Service {
 
     void personBankruptcy(EnumFocusController url_part, String innfl, String fio, String birthDate) throws RestClientException;
 }

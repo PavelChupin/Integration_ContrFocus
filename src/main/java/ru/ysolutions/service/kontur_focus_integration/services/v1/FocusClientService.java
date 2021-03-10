@@ -1,7 +1,8 @@
-package ru.ysolutions.service.kontur_focus_integration.services;
+package ru.ysolutions.service.kontur_focus_integration.services.v1;
 
 import org.springframework.web.client.RestClientException;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
+import ru.ysolutions.service.kontur_focus_integration.services.Service;
 
 public interface FocusClientService extends Service {
 

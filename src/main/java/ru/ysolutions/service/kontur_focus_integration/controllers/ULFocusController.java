@@ -6,14 +6,13 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import ru.ysolutions.service.kontur_focus_integration.configs.ConfigProperties;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
-import ru.ysolutions.service.kontur_focus_integration.services.FocusClientService;
+import ru.ysolutions.service.kontur_focus_integration.services.v1.FocusClientService;
 
 import java.util.HashMap;
 import java.util.Map;

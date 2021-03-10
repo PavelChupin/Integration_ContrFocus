@@ -1,4 +1,4 @@
-package ru.ysolutions.service.kontur_focus_integration.services;
+package ru.ysolutions.service.kontur_focus_integration.services.v2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import ru.ysolutions.service.kontur_focus_integration.configs.ConfigProperties;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
 import ru.ysolutions.service.kontur_focus_integration.dao.entities.PersonBankruptcy;
 import ru.ysolutions.service.kontur_focus_integration.dao.repositories.PersonBankruptcyRepository;
+import ru.ysolutions.service.kontur_focus_integration.services.v1.FocusClientServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
