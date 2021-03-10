@@ -20,4 +20,7 @@ public interface FocusClientService {
     String getForeignRepresen(EnumFocusController url_part, String inn, String nza) throws RestClientException;
 
     byte[] getFilePDFBriefReport(EnumFocusController url_part, String ogrn, String inn, boolean pdf) throws RestClientException;
+
+    void personBankruptcy(EnumFocusController url_part, String innfl, String fio, String birthDate) throws RestClientException;
+
 }
