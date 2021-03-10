@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestClientException;
 import ru.ysolutions.service.kontur_focus_integration.configs.ConfigProperties;
 import ru.ysolutions.service.kontur_focus_integration.controllers.enum_controller.EnumFocusController;
 import ru.ysolutions.service.kontur_focus_integration.services.FocusClientService;
+import ru.ysolutions.service.kontur_focus_integration.services.FocusClientServiceNew;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +28,14 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 @Api("FocusController")
 public class FocusController {
     private static final Logger log = LoggerFactory.getLogger(FocusController.class);
-    private final FocusClientService focusClientService;
+
+    private final FocusClientServiceNew focusClientServiceNew;
+
     private final ConfigProperties configProperties;
 
     @Autowired
-    public FocusController(FocusClientService focusClientService, ConfigProperties configProperties) {
-        this.focusClientService = focusClientService;
+    public FocusController(FocusClientServiceNew focusClientServiceNew, ConfigProperties configProperties) {
+        this.focusClientServiceNew = focusClientServiceNew;
         this.configProperties = configProperties;
     }
 
@@ -74,7 +78,7 @@ public class FocusController {
             EnumFocusController enumFocusController = EnumFocusController.getByValue(url_part);
             switch (enumFocusController) {
                 case PERSON_BANKRUPTCY: {
-                    focusClientService.personBankruptcy(enumFocusController, innfl, fio, birthDate);
+                    focusClientServiceNew.personBankruptcy(enumFocusController, innfl, fio, birthDate);
                     return ResponseEntity.status(HttpStatus.OK).body("OK");
                 }
                 default:

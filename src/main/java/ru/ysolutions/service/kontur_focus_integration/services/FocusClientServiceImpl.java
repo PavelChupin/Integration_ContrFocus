@@ -37,21 +37,11 @@ public class FocusClientServiceImpl implements FocusClientService {
     }
 
     @Override
-    public void personBankruptcy(EnumFocusController url_part, String innfl, String fio, String birthDate) throws RestClientException {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("innfl", innfl);
-        urlParams.put("fio", fio);
-        urlParams.put("birthDate", birthDate);
-        List<PersonBankruptcy> p = getPersonBankruptcy(getUrlJSON(getUrlParams(urlParams), url_part));
-        personBankruptcy.saveAll(p);
-    }
-
-    @Override
     public byte[] getFilePDF(EnumFocusController url_part, String ogrn, String inn) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
-        return getResponceByteArr(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceByteArr(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
@@ -59,7 +49,7 @@ public class FocusClientServiceImpl implements FocusClientService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("q", q);
         urlParams.put("date", date);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
@@ -68,21 +58,21 @@ public class FocusClientServiceImpl implements FocusClientService {
         urlParams.put("innfl", innfl);
         urlParams.put("fio", fio);
         urlParams.put("birthDate", birthDate);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
     public String isInvalidPassports(EnumFocusController url_part, String passportNumber) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("passportNumber", passportNumber);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
     public String findPublicDolLic(EnumFocusController url_part, String fio) throws RestClientException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("fio", fio);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
@@ -90,7 +80,7 @@ public class FocusClientServiceImpl implements FocusClientService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("nza", nza);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
@@ -98,7 +88,7 @@ public class FocusClientServiceImpl implements FocusClientService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
-        return getResponceBody(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceBody(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     @Override
@@ -107,7 +97,7 @@ public class FocusClientServiceImpl implements FocusClientService {
         urlParams.put("inn", inn);
         urlParams.put("ogrn", ogrn);
         urlParams.put("pdf", Boolean.valueOf(pdf).toString());
-        return getResponceByteArr(getUrl(getUrlParams(urlParams), url_part));
+        return getResponceByteArr(getUrl(getUrlParams(urlParams, configProperties.getKey()), url_part));
     }
 
     private byte[] getResponceByteArr(String url) {
@@ -135,51 +125,11 @@ public class FocusClientServiceImpl implements FocusClientService {
         return responce;
     }
 
-    private List<PersonBankruptcy>  getPersonBankruptcy(String url) throws RestClientException {
-        log.info("url request to kontr focus: " + url);
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(header);
-
-        PersonBankruptcy[]  responce;
-        try {
-            responce =  restTemplate.exchange(url,HttpMethod.GET,entity,PersonBankruptcy[].class).getBody();
-        } catch (RestClientException e) {
-            log.info(e.getMessage());
-            throw e;
-        }
-        return Arrays.asList(responce);
-    }
-
-    private String getUrlParams(Map<String, String> params) {
-        if (log.isDebugEnabled()) {
-            log.debug("input params to method getUrlParams: " + params);
-        }
-
-        StringBuilder urlParams = new StringBuilder(String.format("key=%s", configProperties.getKey()));
-
-        params.forEach((key, value) -> {
-            if (value != null) {
-                urlParams.append(String.format("&%s=%s", key, value));
-            }
-        });
-        return urlParams.toString();
-    }
-
     private String getUrl(String urlParams, EnumFocusController url_part) {
         if (log.isDebugEnabled()) {
             log.debug("input params to method " + FocusClientServiceImpl.class.getName() + ".getUrl: " + "urlParams = " + urlParams + ", url_part = " + url_part);
         }
 
         return String.format("%s/%s?%s&xml", configProperties.getUrl(), url_part.getValue(), urlParams);
-    }
-
-    private String getUrlJSON(String urlParams, EnumFocusController url_part) {
-        if (log.isDebugEnabled()) {
-            log.debug("input params to method " + FocusClientServiceImpl.class.getName() + ".getUrl: " + "urlParams = " + urlParams + ", url_part = " + url_part);
-        }
-
-        return String.format("%s/%s?%s", configProperties.getUrl(), url_part.getValue(), urlParams);
     }
 }
